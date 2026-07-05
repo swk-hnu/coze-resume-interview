@@ -2178,7 +2178,7 @@ function formatWorkflowHtml(raw, preferredText) {
   const text = String(preferredText || "").trim();
 
   if (text) {
-    sections.push(renderMarkdownLike(text));
+    sections.push(`<div class="rich-text">${renderMarkdownLike(text)}</div>`);
   }
 
   const pretty = escapeHtml(stringifyResult(raw));
@@ -2193,42 +2193,93 @@ function renderMarkdownLike(markdown) {
   const lines = String(markdown || "")
     .trim()
     .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+    .map((line) => line.trim());
 
-  let html = "";
-  let inList = false;
+  const blocks = [];
+  let paragraphLines = [];
+  let listType = "";
+  let listItems = [];
+
+  const flushParagraph = () => {
+    if (!paragraphLines.length) {
+      return;
+    }
+
+    blocks.push(
+      `<p>${paragraphLines.map((line) => renderInlineMarkdown(line)).join("<br />")}</p>`,
+    );
+    paragraphLines = [];
+  };
+
+  const flushList = () => {
+    if (!listItems.length || !listType) {
+      return;
+    }
+
+    blocks.push(
+      `<${listType}>${listItems
+        .map((item) => `<li>${renderInlineMarkdown(item)}</li>`)
+        .join("")}</${listType}>`,
+    );
+    listType = "";
+    listItems = [];
+  };
 
   for (const line of lines) {
-    if (line.startsWith("#### ")) {
-      if (inList) {
-        html += "</ul>";
-        inList = false;
-      }
-      html += `<h4>${escapeHtml(line.replace("#### ", ""))}</h4>`;
+    if (!line) {
+      flushParagraph();
+      flushList();
       continue;
     }
 
-    if (line.startsWith("- ")) {
-      if (!inList) {
-        html += "<ul>";
-        inList = true;
-      }
-      html += `<li>${escapeHtml(line.replace("- ", ""))}</li>`;
+    const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
+    if (headingMatch) {
+      flushParagraph();
+      flushList();
+
+      const level = Math.min(headingMatch[1].length + 1, 5);
+      blocks.push(`<h${level}>${renderInlineMarkdown(headingMatch[2])}</h${level}>`);
       continue;
     }
 
-    if (inList) {
-      html += "</ul>";
-      inList = false;
+    if (/^(-|\*)\s+/.test(line)) {
+      flushParagraph();
+      const item = line.replace(/^(-|\*)\s+/, "");
+      if (listType && listType !== "ul") {
+        flushList();
+      }
+      listType = "ul";
+      listItems.push(item);
+      continue;
     }
 
-    html += `<p>${escapeHtml(line)}</p>`;
+    if (/^\d+\.\s+/.test(line)) {
+      flushParagraph();
+      const item = line.replace(/^\d+\.\s+/, "");
+      if (listType && listType !== "ol") {
+        flushList();
+      }
+      listType = "ol";
+      listItems.push(item);
+      continue;
+    }
+
+    flushList();
+    paragraphLines.push(line);
   }
 
-  if (inList) {
-    html += "</ul>";
-  }
+  flushParagraph();
+  flushList();
+
+  return blocks.join("");
+}
+
+function renderInlineMarkdown(text) {
+  let html = escapeHtml(text);
+
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
 
   return html;
 }

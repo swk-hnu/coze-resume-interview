@@ -617,13 +617,22 @@ button {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.message-card h2,
 .message-card h3,
 .message-card h4,
+.message-card h5,
 .message-card p,
 .message-card ul,
+.message-card ol,
 .message-card pre,
 .message-card details {
   margin-top: 0;
+}
+
+.message-card h2 {
+  margin-bottom: 12px;
+  font-size: 22px;
+  line-height: 1.3;
 }
 
 .message-card h3 {
@@ -637,14 +646,55 @@ button {
   font-size: 15px;
 }
 
+.message-card h5 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
 .message-card p,
 .message-card li {
   margin-bottom: 0;
   line-height: 1.75;
 }
 
-.message-card ul {
+.message-card ul,
+.message-card ol {
   padding-left: 20px;
+}
+
+.message-card ul,
+.message-card ol,
+.message-card .rich-text p + p,
+.message-card .rich-text h2 + p,
+.message-card .rich-text h3 + p,
+.message-card .rich-text h4 + p,
+.message-card .rich-text h5 + p,
+.message-card .rich-text p + ul,
+.message-card .rich-text p + ol,
+.message-card .rich-text ul + p,
+.message-card .rich-text ol + p,
+.message-card .rich-text h2 + ul,
+.message-card .rich-text h2 + ol,
+.message-card .rich-text h3 + ul,
+.message-card .rich-text h3 + ol,
+.message-card .rich-text h4 + ul,
+.message-card .rich-text h4 + ol,
+.message-card .rich-text h5 + ul,
+.message-card .rich-text h5 + ol {
+  margin-top: 10px;
+}
+
+.message-card .rich-text strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.message-card .rich-text code {
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+  font-size: 0.95em;
 }
 
 .message-card details {
