@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .vercel/
+node_modules/
+npm-debug.log*
+.env
