@@ -502,7 +502,7 @@ async function handleRoundsReply(message) {
       state.flow.lastQuestion = result.question;
       pushAssistantMessage({
         title: `第 ${state.flow.currentRound} 题`,
-        body: result.question,
+        html: renderRichTextHtml(result.question),
         meta: result.meta,
       });
     } else {
@@ -600,7 +600,7 @@ async function handleInterviewAnswer(answer) {
         state.flow.lastQuestion = nextQuestionResult.question;
         pushAssistantMessage({
           title: `第 ${state.flow.currentRound} 题`,
-          body: nextQuestionResult.question,
+          html: renderRichTextHtml(nextQuestionResult.question),
           meta: nextQuestionResult.meta,
         });
         render();
@@ -653,7 +653,7 @@ async function handleInterviewAnswer(answer) {
     state.flow.lastQuestion = result.question;
     pushAssistantMessage({
       title: `第 ${state.flow.currentRound} 题`,
-      body: result.question,
+      html: renderRichTextHtml(result.question),
       meta: result.meta,
     });
   } catch (error) {
@@ -2178,7 +2178,7 @@ function formatWorkflowHtml(raw, preferredText) {
   const text = String(preferredText || "").trim();
 
   if (text) {
-    sections.push(`<div class="rich-text">${renderMarkdownLike(text)}</div>`);
+    sections.push(renderRichTextHtml(text));
   }
 
   const pretty = escapeHtml(stringifyResult(raw));
@@ -2187,6 +2187,15 @@ function formatWorkflowHtml(raw, preferredText) {
   );
 
   return sections.join("");
+}
+
+function renderRichTextHtml(text) {
+  const value = String(text || "").trim();
+  if (!value) {
+    return "";
+  }
+
+  return `<div class="rich-text">${renderMarkdownLike(value)}</div>`;
 }
 
 function renderMarkdownLike(markdown) {
