@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>简历优化与模拟面试</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">LH</div>
+          <div class="brand-copy">
+            <span>Career Flow</span>
+            <strong>简历优化与模拟面试</strong>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <details class="dev-settings">
+            <summary>连接 Coze</summary>
+            <div class="settings-panel">
+              <label class="field">
+                <span>运行模式</span>
+                <select data-config-mode>
+                  <option value="published">Coze 工作流 API</option>
+                  <option value="mock">本地 Mock</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>API 地址</span>
+                <input
+                  data-config-endpoint
+                  type="text"
+                  placeholder="默认 https://api.coze.cn"
+                />
+              </label>
+
+              <label class="field">
+                <span>工作流 ID</span>
+                <input
+                  data-config-workflow-id
+                  type="text"
+                  placeholder="填写 workflow_id"
+                />
+              </label>
+
+              <label class="field">
+                <span>Coze PAT / Access Token</span>
+                <input
+                  data-config-workflow-token
+                  type="password"
+                  placeholder="需要具备运行权限"
+                />
+              </label>
+
+              <label class="field">
+                <span>文件上传 Token</span>
+                <input
+                  data-config-access-token
+                  type="password"
+                  placeholder="可留空，默认复用上面的 PAT"
+                />
+              </label>
+
+              <div class="settings-actions">
+                <button class="secondary-btn" data-load-schema type="button">读取参数说明</button>
+                <button class="secondary-btn" data-save-config type="button">保存配置</button>
+              </div>
+
+              <div class="schema-note" data-schema-status>
+                将直接调用 Coze 工作流 OpenAPI
+              </div>
+            </div>
+          </details>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="surface" data-surface>
+          <div class="surface-head">
+            <div class="surface-intro">
+              <p class="eyebrow">Coze 工作流前端</p>
+              <h1 data-main-title>先告诉我你想做什么</h1>
+              <p class="surface-copy" data-main-copy>
+                输入诉求、目标岗位和简历文件。简历优化会直接展示结果，模拟面试会切换到聊天流程继续提问与反馈。
+              </p>
+
+              <div class="feature-row">
+                <span class="feature-chip">自动分流</span>
+                <span class="feature-chip">支持 PDF / DOC / DOCX / TXT</span>
+                <span class="feature-chip">保留真实工作流返回</span>
+              </div>
+            </div>
+
+            <div class="surface-status">
+              <span class="status-caption">当前状态</span>
+              <div class="status-pills">
+                <span class="status-pill" data-flow-phase>待开始</span>
+                <span class="status-pill subtle" data-intent-pill>未识别</span>
+              </div>
+              <p class="status-note">
+                如果你选择模拟面试，开始后会进入聊天界面继续确认轮次、回答问题和查看复盘结果。
+              </p>
+            </div>
+          </div>
+
+          <section class="entry-shell" data-entry-shell>
+            <div class="panel-heading">
+              <div>
+                <p class="panel-eyebrow">输入信息</p>
+                <h2 class="panel-title">一次填完，直接开始</h2>
+              </div>
+            </div>
+
+            <form class="entry-form" data-entry-form>
+              <div class="field-grid">
+                <label class="field">
+                  <span>你的诉求</span>
+                  <select data-request-type name="requestType">
+                    <option value="diagnosis">生成 / 优化简历</option>
+                    <option value="interview">模拟面试</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>目标岗位</span>
+                  <input
+                    data-target-position
+                    name="targetPosition"
+                    type="text"
+                    placeholder="例如：产品经理"
+                  />
+                </label>
+              </div>
+
+              <label class="upload-card" data-upload-card>
+                <input data-file-input type="file" accept=".pdf,.doc,.docx,.txt" hidden />
+                <span class="upload-label">上传简历</span>
+                <strong data-file-name>点击上传 PDF / DOC / DOCX / TXT</strong>
+                <em>上传后会自动提取文件内容，并按诉求进入对应流程</em>
+              </label>
+
+              <label class="field details-field">
+                <span>补充说明</span>
+                <textarea
+                  data-entry-message
+                  name="entryMessage"
+                  rows="4"
+                  placeholder="例如：希望重点优化项目经历；如果是模拟面试，希望问题更偏产品经理场景。"
+                ></textarea>
+              </label>
+
+              <div class="form-error hidden" data-entry-error></div>
+
+              <div class="form-footer">
+                <span class="session-id" data-session-hint>session_id 将自动生成</span>
+                <div class="action-row">
+                  <button class="secondary-btn" data-generate-session type="button">新会话</button>
+                  <button class="primary-btn" type="submit">开始</button>
+                </div>
+              </div>
+            </form>
+          </section>
+
+          <section class="chat-shell hidden" data-chat-shell>
+            <div class="chat-summary">
+              <div class="summary-card">
+                <span>当前流程</span>
+                <strong data-summary-request>未识别</strong>
+              </div>
+              <div class="summary-card">
+                <span>目标岗位</span>
+                <strong data-summary-position>未填写</strong>
+              </div>
+              <div class="summary-card">
+                <span>简历文件</span>
+                <strong data-summary-file>未上传</strong>
+              </div>
+            </div>
+
+            <div class="conversation-panel">
+              <div class="conversation-head">
+                <div>
+                  <span class="conversation-label">当前状态</span>
+                  <strong data-flow-title>等待输入</strong>
+                </div>
+              </div>
+
+              <div class="thread-frame">
+                <div class="thread" data-thread></div>
+              </div>
+
+              <form class="chat-composer" data-chat-form>
+                <div class="chat-meta">
+                  <span class="session-id" data-chat-session>session_id 将自动生成</span>
+                  <label class="round-inline hidden" data-round-inline>
+                    <span>面试轮次</span>
+                    <input name="totalRounds" type="number" min="1" max="6" value="2" />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span data-chat-label>聊天输入</span>
+                  <textarea
+                    data-chat-input
+                    name="chatMessage"
+                    rows="4"
+                    placeholder="请在这里输入内容"
+                  ></textarea>
+                </label>
+
+                <div class="action-row end">
+                  <button class="secondary-btn" data-back-home type="button">返回表单</button>
+                  <button class="primary-btn" type="submit">发送</button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
